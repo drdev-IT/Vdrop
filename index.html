@@ -76,7 +76,7 @@
   header { margin-bottom: 56px; }
 
   .logo {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Syne', 'Arial Narrow', sans-serif;
     font-weight: 800;
     font-size: clamp(48px, 10vw, 80px);
     letter-spacing: -0.04em;
@@ -93,6 +93,7 @@
     background: var(--accent);
     border-radius: 50%;
     display: inline-block;
+    flex-shrink: 0;
     margin-bottom: 8px;
     animation: pulse 2s ease-in-out infinite;
   }
@@ -454,7 +455,7 @@
     letter-spacing: 0.06em;
   }
   .footer-divider { color: var(--border); }
-  .footer-copy { margin-bottom: 8px; letter-spacing: 0.1em; }
+  .footer-copy {  letter-spacing: 0.1em; }
   .footer-disclaimer {
     font-size: 10px;
     max-width: 480px;
@@ -559,13 +560,35 @@
 
 </div>
 <script>
-  const INSTANCES = [
-    'https://cobalt.api.timelessnesses.me',
-    'https://cobalt.permitted.gg',
-    'https://cobalt.drgns.space',
-    'https://cobalt-api.rycka.io',
-    'https://cobalt.synzr.space',
-  ];
+  // Dynamically fetched from instances.cobalt.best — always up to date
+  let INSTANCES = [];
+  let instancesLoaded = false;
+
+  async function loadInstances() {
+    if (instancesLoaded) return;
+    try {
+      const res = await fetch('https://instances.cobalt.best/instances.json', {
+        headers: { 'User-Agent': 'vdrop/2.0 (+https://bakrlabs.github.io/Vdrop)' },
+        signal: AbortSignal.timeout(6000)
+      });
+      const list = await res.json();
+      // Only use instances with no auth, CORS enabled, and online
+      INSTANCES = list
+        .filter(i => i.online && i.info?.auth === false && i.info?.cors === true)
+        .map(i => `https://${i.api}`)
+        .slice(0, 8);
+    } catch (_) {}
+    // Fallback hardcoded instances if fetch fails
+    if (INSTANCES.length === 0) {
+      INSTANCES = [
+        'https://cobalt.api.timelessnesses.me',
+        'https://cobalt.drgns.space',
+        'https://cobalt.synzr.space',
+        'https://co.wuk.sh',
+      ];
+    }
+    instancesLoaded = true;
+  }
 
   let isAudioOnly = false;
   let selectedQuality = 'max';
@@ -591,7 +614,9 @@
 
     hideError();
     setLoading(true);
-    showResult('Connecting to server…', 10);
+    showResult('Finding best server…', 5);
+    await loadInstances();
+    showResult('Connecting to server…', 15);
 
     const body = { url };
     if (isAudioOnly) {
@@ -707,13 +732,4 @@
       const u = new URL(url);
       const id = u.searchParams.get('v') || u.pathname.split('/').filter(Boolean).pop() || 'download';
       return isAudioOnly ? `${id}.mp3` : `${id}.mp4`;
-    } catch { return isAudioOnly ? 'download.mp3' : 'download.mp4'; }
-  }
-
-  document.getElementById('urlInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') handleDownload();
-  });
-</script>
-</body>
-  </html>
-  
+    } catch { return
