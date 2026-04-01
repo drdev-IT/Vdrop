@@ -76,7 +76,7 @@
   header { margin-bottom: 56px; }
 
   .logo {
-    font-family: 'Syne', 'Arial Narrow', sans-serif;
+    font-family: 'Syne', sans-serif;
     font-weight: 800;
     font-size: clamp(48px, 10vw, 80px);
     letter-spacing: -0.04em;
@@ -164,7 +164,6 @@
   .btn-fetch:active { transform: translateY(0); }
   .btn-fetch:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  /* Platform badges */
   .platforms {
     display: flex;
     gap: 8px;
@@ -180,7 +179,7 @@
     letter-spacing: 0.08em;
   }
 
-  /* Options section */
+  /* Options */
   .options-section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -203,7 +202,6 @@
     margin-bottom: 16px;
   }
 
-  /* Toggle row */
   .toggle-row {
     display: flex;
     align-items: center;
@@ -211,8 +209,8 @@
     padding: 14px 0;
     border-bottom: 1px solid var(--border);
     cursor: pointer;
+    user-select: none;
   }
-  .toggle-row:last-child { border-bottom: none; }
 
   .toggle-label {
     font-size: 14px;
@@ -230,6 +228,7 @@
     position: relative;
     transition: background 0.2s;
     flex-shrink: 0;
+    pointer-events: none;
   }
   .toggle-switch.on { background: var(--accent); }
   .toggle-switch::after {
@@ -245,7 +244,6 @@
   }
   .toggle-switch.on::after { transform: translateX(20px); }
 
-  /* Quality grid */
   .quality-wrap { margin-top: 16px; }
   .quality-label {
     font-size: 12px;
@@ -296,7 +294,7 @@
   .btn-download:active { transform: translateY(0); }
   .btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
-  /* Result section */
+  /* Result */
   .result-section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -308,21 +306,15 @@
   }
   .result-section.visible { display: block; }
 
-  .result-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
   .result-status {
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
   }
 
-  /* Progress bar */
   .progress-bar-bg {
     height: 6px;
     background: var(--border);
@@ -338,7 +330,6 @@
     width: 0%;
   }
 
-  /* Success file item */
   .success-label {
     display: flex;
     align-items: center;
@@ -354,6 +345,7 @@
     height: 8px;
     background: var(--success);
     border-radius: 50%;
+    flex-shrink: 0;
   }
 
   .file-item {
@@ -365,7 +357,6 @@
     border-radius: 8px;
     padding: 12px 16px;
     gap: 12px;
-    animation: slideIn 0.3s ease;
   }
   .file-name {
     font-size: 13px;
@@ -386,10 +377,10 @@
     padding: 7px 14px;
     border-radius: 6px;
     cursor: pointer;
-    transition: transform 0.1s;
     white-space: nowrap;
     text-decoration: none;
     display: inline-block;
+    transition: transform 0.1s;
   }
   .btn-dl-file:hover { transform: scale(1.05); }
 
@@ -400,6 +391,7 @@
     padding-top: 12px;
     border-top: 1px solid var(--border);
     line-height: 1.6;
+    display: none;
   }
 
   /* Error */
@@ -412,20 +404,21 @@
     font-size: 13px;
     margin-bottom: 16px;
     display: none;
-    animation: slideIn 0.2s ease;
+    line-height: 1.6;
   }
-  .error-box.visible { display: block; }
+  .error-box.visible { display: block; animation: slideIn 0.2s ease; }
 
   /* Spinner */
   .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(0,0,0,0.3);
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0,0,0,0.25);
     border-top-color: #0a0a0f;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     display: inline-block;
     vertical-align: middle;
+    margin-right: 6px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -455,7 +448,7 @@
     letter-spacing: 0.06em;
   }
   .footer-divider { color: var(--border); }
-  .footer-copy {  letter-spacing: 0.1em; }
+  .footer-copy { margin-bottom: 8px; }
   .footer-disclaimer {
     font-size: 10px;
     max-width: 480px;
@@ -479,13 +472,11 @@
     <p class="tagline">YouTube · Facebook · TikTok · Instagram · 1000+ sites</p>
   </header>
 
-  <!-- URL Input -->
   <div class="input-section">
     <p class="input-label">Paste URL</p>
     <div class="input-wrap">
-      <input type="text" class="url-input" id="urlInput"
-        placeholder="https://youtube.com/watch?v=..." />
-      <button class="btn-fetch" id="btnFetch" onclick="handleDownload()">Fetch</button>
+      <input type="text" class="url-input" id="urlInput" placeholder="https://youtube.com/watch?v=..." />
+      <button class="btn-fetch" id="btnFetch">Fetch</button>
     </div>
     <div class="platforms">
       <span class="platform-badge">YouTube</span>
@@ -500,11 +491,10 @@
     </div>
   </div>
 
-  <!-- Options -->
   <div class="options-section">
     <p class="options-title">Download Options</p>
 
-    <div class="toggle-row" onclick="toggleAudio()">
+    <div class="toggle-row" id="audioToggleRow">
       <span class="toggle-label">
         <span class="toggle-icon">🎵</span> Audio only (MP3)
       </span>
@@ -513,39 +503,31 @@
 
     <div class="quality-wrap" id="qualityWrap">
       <p class="quality-label">⚡ Video Quality</p>
-      <div class="quality-grid">
-        <button class="quality-btn selected" data-q="max" onclick="selectQuality(this)">Best</button>
-        <button class="quality-btn" data-q="2160" onclick="selectQuality(this)">4K</button>
-        <button class="quality-btn" data-q="1440" onclick="selectQuality(this)">1440p</button>
-        <button class="quality-btn" data-q="1080" onclick="selectQuality(this)">1080p</button>
-        <button class="quality-btn" data-q="720" onclick="selectQuality(this)">720p</button>
-        <button class="quality-btn" data-q="480" onclick="selectQuality(this)">480p</button>
-        <button class="quality-btn" data-q="360" onclick="selectQuality(this)">360p</button>
+      <div class="quality-grid" id="qualityGrid">
+        <button class="quality-btn selected" data-q="max">Best</button>
+        <button class="quality-btn" data-q="2160">4K</button>
+        <button class="quality-btn" data-q="1440">1440p</button>
+        <button class="quality-btn" data-q="1080">1080p</button>
+        <button class="quality-btn" data-q="720">720p</button>
+        <button class="quality-btn" data-q="480">480p</button>
+        <button class="quality-btn" data-q="360">360p</button>
       </div>
     </div>
   </div>
 
-  <!-- Download button -->
-  <button class="btn-download" id="btnDownload" onclick="handleDownload()">
-    ↓ Download
-  </button>
+  <button class="btn-download" id="btnDownload">↓ Download</button>
 
-  <!-- Error -->
   <div class="error-box" id="errorBox"></div>
 
-  <!-- Result -->
   <div class="result-section" id="resultSection">
-    <div class="result-header">
-      <span class="result-status" id="resultStatus">Processing…</span>
-    </div>
+    <span class="result-status" id="resultStatus">Processing…</span>
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" id="progressFill"></div>
     </div>
     <div id="filesList"></div>
-    <div class="instance-note" id="instanceNote" style="display:none"></div>
+    <div class="instance-note" id="instanceNote"></div>
   </div>
 
-  <!-- Footer -->
   <div class="footer">
     <div class="footer-brand">
       <span class="footer-logo">⬡ BakrLabs</span>
@@ -560,176 +542,190 @@
 
 </div>
 <script>
-  // Dynamically fetched from instances.cobalt.best — always up to date
-  let INSTANCES = [];
-  let instancesLoaded = false;
+var instances = [];
+var instancesLoaded = false;
+var isAudioOnly = false;
+var selectedQuality = 'max';
 
-  async function loadInstances() {
-    if (instancesLoaded) return;
-    try {
-      const res = await fetch('https://instances.cobalt.best/instances.json', {
-        headers: { 'User-Agent': 'vdrop/2.0 (+https://bakrlabs.github.io/Vdrop)' },
-        signal: AbortSignal.timeout(6000)
-      });
-      const list = await res.json();
-      // Only use instances with no auth, CORS enabled, and online
-      INSTANCES = list
-        .filter(i => i.online && i.info?.auth === false && i.info?.cors === true)
-        .map(i => `https://${i.api}`)
-        .slice(0, 8);
-    } catch (_) {}
-    // Fallback hardcoded instances if fetch fails
-    if (INSTANCES.length === 0) {
-      INSTANCES = [
-        'https://cobalt.api.timelessnesses.me',
-        'https://cobalt.drgns.space',
-        'https://cobalt.synzr.space',
-        'https://co.wuk.sh',
-      ];
+// Load live instance list from instances.cobalt.best
+async function loadInstances() {
+  if (instancesLoaded) return;
+  try {
+    var res = await fetch('https://instances.cobalt.best/instances.json', {
+      signal: AbortSignal.timeout(6000)
+    });
+    var list = await res.json();
+    instances = list
+      .filter(function(i) { return i.online && i.info && i.info.auth === false && i.info.cors === true; })
+      .map(function(i) { return 'https://' + i.api; })
+      .slice(0, 8);
+  } catch(e) {}
+  if (instances.length === 0) {
+    instances = [
+      'https://cobalt.api.timelessnesses.me',
+      'https://cobalt.drgns.space',
+      'https://cobalt.synzr.space',
+      'https://co.wuk.sh'
+    ];
+  }
+  instancesLoaded = true;
+}
+
+// Quality buttons
+document.getElementById('qualityGrid').addEventListener('click', function(e) {
+  var btn = e.target.closest('.quality-btn');
+  if (!btn) return;
+  document.querySelectorAll('.quality-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selectedQuality = btn.getAttribute('data-q');
+});
+
+// Audio toggle
+document.getElementById('audioToggleRow').addEventListener('click', function() {
+  isAudioOnly = !isAudioOnly;
+  document.getElementById('audioToggle').classList.toggle('on', isAudioOnly);
+  var qw = document.getElementById('qualityWrap');
+  qw.style.opacity = isAudioOnly ? '0.3' : '1';
+  qw.style.pointerEvents = isAudioOnly ? 'none' : '';
+});
+
+// Fetch / Download buttons
+document.getElementById('btnFetch').addEventListener('click', handleDownload);
+document.getElementById('btnDownload').addEventListener('click', handleDownload);
+document.getElementById('urlInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleDownload();
+});
+
+async function handleDownload() {
+  var url = document.getElementById('urlInput').value.trim();
+  if (!url) { showError('Please paste a video URL first.'); return; }
+
+  hideError();
+  setLoading(true);
+  showResult('Finding best server…', 5);
+
+  await loadInstances();
+  showResult('Connecting…', 15);
+
+  var body = { url: url };
+  if (isAudioOnly) {
+    body.downloadMode = 'audio';
+    body.audioFormat = 'mp3';
+  } else {
+    body.downloadMode = 'auto';
+    if (selectedQuality !== 'max') body.videoQuality = selectedQuality;
+  }
+
+  try {
+    var result = await tryInstances(body);
+    var data = result.data;
+    var instance = result.instance;
+
+    if (data.status === 'error') {
+      throw new Error(data.error && data.error.code ? data.error.code : 'This URL is not supported or unavailable.');
     }
-    instancesLoaded = true;
-  }
 
-  let isAudioOnly = false;
-  let selectedQuality = 'max';
+    setProgress(90, 'Preparing file…');
 
-  function toggleAudio() {
-    isAudioOnly = !isAudioOnly;
-    const toggle = document.getElementById('audioToggle');
-    const qualityWrap = document.getElementById('qualityWrap');
-    toggle.classList.toggle('on', isAudioOnly);
-    qualityWrap.style.opacity = isAudioOnly ? '0.3' : '1';
-    qualityWrap.style.pointerEvents = isAudioOnly ? 'none' : '';
-  }
-
-  function selectQuality(el) {
-    document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedQuality = el.dataset.q;
-  }
-
-  async function handleDownload() {
-    const url = document.getElementById('urlInput').value.trim();
-    if (!url) { showError('Please paste a video URL first.'); return; }
-
-    hideError();
-    setLoading(true);
-    showResult('Finding best server…', 5);
-    await loadInstances();
-    showResult('Connecting to server…', 15);
-
-    const body = { url };
-    if (isAudioOnly) {
-      body.downloadMode = 'audio';
-      body.audioFormat = 'mp3';
+    var fileUrl, filename;
+    if (data.url) {
+      fileUrl = data.url;
+      filename = data.filename || guessFilename(url);
+    } else if (data.status === 'picker' && data.picker && data.picker.length) {
+      fileUrl = data.picker[0].url;
+      filename = guessFilename(url);
     } else {
-      body.downloadMode = 'auto';
-      if (selectedQuality !== 'max') body.videoQuality = selectedQuality;
+      throw new Error('Unexpected response. Please try again.');
     }
 
+    setProgress(100, null);
+    showFileReady(fileUrl, filename, instance);
+
+  } catch(e) {
+    hideResult();
+    showError(e.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function tryInstances(body) {
+  for (var i = 0; i < instances.length; i++) {
+    var instance = instances[i];
     try {
-      const { data, instance } = await tryInstances(body);
-
-      if (data.status === 'error') {
-        throw new Error(data.error?.code || 'This URL is not supported or unavailable.');
+      var res = await fetch(instance + '/', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(12000)
+      });
+      if (res.ok) {
+        var data = await res.json();
+        return { data: data, instance: instance };
       }
-
-      setProgress(90, 'Preparing file…');
-
-      let fileUrl, filename;
-
-      if (data.url) {
-        fileUrl = data.url;
-        filename = data.filename || guessFilename(url);
-      } else if (data.status === 'picker' && data.picker?.length) {
-        fileUrl = data.picker[0].url;
-        filename = guessFilename(url);
-      } else {
-        throw new Error('Unexpected server response. Please try again.');
-      }
-
-      setProgress(100, null);
-      showFileReady(fileUrl, filename, instance);
-
-    } catch (e) {
-      hideResult();
-      showError(e.message);
-    } finally {
-      setLoading(false);
-    }
+    } catch(e) {}
   }
+  throw new Error('All servers are busy. Please try again in a moment.');
+}
 
-  async function tryInstances(body) {
-    for (const instance of INSTANCES) {
-      try {
-        const res = await fetch(`${instance}/`, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-          signal: AbortSignal.timeout(12000)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          return { data, instance };
-        }
-      } catch (_) {}
-    }
-    throw new Error('All servers are currently busy. Please try again in a moment.');
+function showResult(statusText, pct) {
+  document.getElementById('resultSection').classList.add('visible');
+  document.getElementById('resultStatus').textContent = statusText;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('filesList').innerHTML = '';
+  document.getElementById('instanceNote').style.display = 'none';
+}
+
+function setProgress(pct, statusText) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (statusText) document.getElementById('resultStatus').textContent = statusText;
+}
+
+function showFileReady(url, filename, instance) {
+  document.getElementById('resultStatus').textContent = 'Ready!';
+  document.getElementById('filesList').innerHTML =
+    '<div class="success-label"><span class="dot-success"></span> File ready to save</div>' +
+    '<div class="file-item">' +
+      '<span class="file-name">' + filename + '</span>' +
+      '<a class="btn-dl-file" href="' + url + '" target="_blank" download="' + filename + '">Save</a>' +
+    '</div>';
+  var note = document.getElementById('instanceNote');
+  note.style.display = 'block';
+  note.textContent = 'Served via ' + instance.replace('https://', '') + '. Link expires shortly — save your file now.';
+}
+
+function hideResult() {
+  document.getElementById('resultSection').classList.remove('visible');
+}
+
+function showError(msg) {
+  var el = document.getElementById('errorBox');
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('visible');
+}
+
+function hideError() {
+  document.getElementById('errorBox').classList.remove('visible');
+}
+
+function setLoading(on) {
+  var btnFetch = document.getElementById('btnFetch');
+  var btnDl = document.getElementById('btnDownload');
+  btnFetch.disabled = on;
+  btnDl.disabled = on;
+  btnFetch.innerHTML = on ? '<span class="spinner"></span>' : 'Fetch';
+  btnDl.textContent = on ? 'Processing…' : '↓ Download';
+}
+
+function guessFilename(url) {
+  try {
+    var u = new URL(url);
+    var id = u.searchParams.get('v') || u.pathname.split('/').filter(Boolean).pop() || 'download';
+    return isAudioOnly ? id + '.mp3' : id + '.mp4';
+  } catch(e) {
+    return isAudioOnly ? 'download.mp3' : 'download.mp4';
   }
-
-  function showResult(statusText, pct) {
-    document.getElementById('resultSection').classList.add('visible');
-    document.getElementById('resultStatus').textContent = statusText;
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('filesList').innerHTML = '';
-    document.getElementById('instanceNote').style.display = 'none';
-  }
-
-  function setProgress(pct, statusText) {
-    document.getElementById('progressFill').style.width = pct + '%';
-    if (statusText) document.getElementById('resultStatus').textContent = statusText;
-  }
-
-  function showFileReady(url, filename, instance) {
-    document.getElementById('resultStatus').textContent = 'Ready!';
-    document.getElementById('filesList').innerHTML = `
-      <div class="success-label"><span class="dot-success"></span> File ready to save</div>
-      <div class="file-item">
-        <span class="file-name">${filename}</span>
-        <a class="btn-dl-file" href="${url}" target="_blank" download="${filename}">Save</a>
-      </div>
-    `;
-    const note = document.getElementById('instanceNote');
-    note.style.display = 'block';
-    note.textContent = `Served via ${instance.replace('https://', '')}. Link expires shortly — save your file now.`;
-  }
-
-  function hideResult() {
-    document.getElementById('resultSection').classList.remove('visible');
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('errorBox');
-    el.textContent = '⚠ ' + msg;
-    el.classList.add('visible');
-  }
-
-  function hideError() {
-    document.getElementById('errorBox').classList.remove('visible');
-  }
-
-  function setLoading(on) {
-    const btnFetch = document.getElementById('btnFetch');
-    const btnDl = document.getElementById('btnDownload');
-    btnFetch.disabled = on;
-    btnDl.disabled = on;
-    btnFetch.innerHTML = on ? '<span class="spinner"></span>' : 'Fetch';
-    btnDl.textContent = on ? 'Processing…' : '↓ Download';
-  }
-
-  function guessFilename(url) {
-    try {
-      const u = new URL(url);
-      const id = u.searchParams.get('v') || u.pathname.split('/').filter(Boolean).pop() || 'download';
-      return isAudioOnly ? `${id}.mp3` : `${id}.mp4`;
-    } catch { return
+}
+</script>
+</body>
+</html>
